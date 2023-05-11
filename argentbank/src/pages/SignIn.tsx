@@ -2,6 +2,8 @@ import axios from "axios";
 import { useDispatch } from 'react-redux'
 import { loggedIn } from "../store/loginSlice";
 import { useNavigate } from "react-router-dom";
+import { storeUserToken } from "../store/userSlice";
+import store from "../store/store";
 
 const SignIn = () => {
 	const dispatch = useDispatch()
@@ -18,8 +20,11 @@ const SignIn = () => {
 				password: userPassword,
 			},
 		}).then((res) => {
+			//console.log(res.data.body.token)
 			if (res.status === 200) {
 				dispatch(loggedIn());
+				dispatch(storeUserToken(res.data.body.token))
+				console.log(store.getState())
 				navigate('/user')
 			}
 		});
