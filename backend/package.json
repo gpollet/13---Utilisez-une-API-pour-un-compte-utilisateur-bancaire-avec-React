@@ -16,16 +16,15 @@
     "jsonwebtoken": "^9.0.0",
     "mongodb": "4.1",
     "mongoose": "^5.9.21",
-    "redux": "^4.2.1",
     "swagger-ui-express": "^4.1.4",
     "yamljs": "^0.3.0"
   },
   "scripts": {
-    "dev:server": "nodemon ./server/server.js",
+    "dev:server": "node --watch ./server/server.js",
     "populate-db": "node ./server/scripts/populateDatabase.js",
     "server": "node ./server/server.js"
   },
   "devDependencies": {
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.22"
   }
 }
