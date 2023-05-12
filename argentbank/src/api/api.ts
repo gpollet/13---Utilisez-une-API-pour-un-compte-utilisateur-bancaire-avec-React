@@ -1,19 +1,35 @@
-import axios from 'axios';
-import { useSelector, useStore } from 'react-redux';
-import { storeUserToken } from '../store/userSlice';
+import axios from "axios";
 
-export const getUserData = async (userToken:number) => {
+export const checkCredentials = async (email:string, password:string) => {
   let response
-  try {
-    await axios.post(
-      'http://localhost:3001/api/v1/user/profile', {}, {headers: {Authorization: `Bearer ${userToken}`}}
-    )
-    .then((res) => {
-      response = res.data.body
-      console.log(response)
-    })
-  } catch (error) {
-    console.log(error)
-    return
-  }
+  await axios({
+    method: "post",
+    url: "http://localhost:3001/api/v1/user/login",
+    data: {
+      email: email,
+      password: password,
+    },
+  }).then((res) => {
+    response = res
+  })
+  return response
 }
+
+export const getUserData = async (userToken: number) => {
+	let response;
+	try {
+		await axios
+			.post(
+				"http://localhost:3001/api/v1/user/profile",
+				{},
+				{ headers: { Authorization: `Bearer ${userToken}` } }
+			)
+			.then((res) => {
+				response = res.data.body;
+			});
+	} catch (error) {
+		console.log(error);
+    return;
+	}
+  return response
+};

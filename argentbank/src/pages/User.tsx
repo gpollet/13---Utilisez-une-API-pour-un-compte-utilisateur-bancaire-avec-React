@@ -1,6 +1,7 @@
-
+import { useSelector } from "react-redux";
 
 const User = () => {
+	const userData = useSelector((state) => state.user).data
 	return (
 		<>
 			<main className="main bg-dark">
@@ -8,7 +9,7 @@ const User = () => {
 					<h1>
 						Welcome back
 						<br />
-						Tony Jarvis!
+						{userData.firstName} {userData.lastName}
 					</h1>
 					<button className="edit-button">Edit Name</button>
 				</div>

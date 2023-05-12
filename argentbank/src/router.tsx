@@ -3,8 +3,8 @@ import App from "./App";
 import SignIn from "./pages/SignIn";
 import Home from "./pages/Home";
 import User from "./pages/User";
-import { getUserData } from "./api/api";
-import store from "./store/store";
+//import { getUserData } from "./api/api";
+//import store from "./store/store";
 
 const router = createBrowserRouter([
   {
@@ -23,9 +23,6 @@ const router = createBrowserRouter([
       {
         path: "user",
         element: <User />,
-        loader: async () => {
-          await getUserData(store.getState().userToken.value)
-        }
       },
     ]
   }
