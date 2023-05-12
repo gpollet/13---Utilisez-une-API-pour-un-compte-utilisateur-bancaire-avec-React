@@ -1,33 +1,28 @@
-import axios from "axios";
 import { useDispatch } from 'react-redux'
 import { loggedIn } from "../store/loginSlice";
 import { useNavigate } from "react-router-dom";
-import { storeUserToken } from "../store/userSlice";
-import store from "../store/store";
+import { userToken, userInfos } from "../store/userSlice";
+import { checkCredentials, getUserData } from "../api/api";
 
 const SignIn = () => {
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
-
-	const checkCredentials = () => {
-		const userEmail = document.getElementById("username")?.value;
-		const userPassword = document.getElementById("password")?.value;
-		axios({
-			method: "post",
-			url: "http://localhost:3001/api/v1/user/login",
-			data: {
-				email: userEmail,
-				password: userPassword,
-			},
-		}).then((res) => {
-			//console.log(res.data.body.token)
-			if (res.status === 200) {
+	
+	const attemptToLog = async () => {
+		const credentials = {
+			email: document.getElementById("username")?.value,
+			password: document.getElementById("password")?.value
+		}
+		const loginResponse = await checkCredentials(credentials.email, credentials.password)
+			if (loginResponse.status === 200) {
+				const userData = await getUserData(loginResponse.data.body.token)
 				dispatch(loggedIn());
-				dispatch(storeUserToken(res.data.body.token))
-				console.log(store.getState())
+				// Store token for other requests to the backend that needs it (getUserProfile, updateUserProfile)
+				dispatch(userToken(loginResponse.data.body.token))
+				// Store user data to be used accross the other components
+				dispatch(userInfos(userData))
 				navigate('/user')
 			}
-		});
 	};
 
 	return (
@@ -49,14 +44,12 @@ const SignIn = () => {
 							<input type="checkbox" id="remember-me" />
 							<label htmlFor="remember-me">Remember me</label>
 						</div>
-						{/*<a href="./user">*/}
 						<button
 							type="button"
-							onClick={checkCredentials}
+							onClick={attemptToLog}
 							className="sign-in-button">
 							Sign In
 						</button>
-						{/*</a>*/}
 					</form>
 				</section>
 			</main>
