@@ -1,9 +1,7 @@
-import axios from "axios";
 import { useDispatch } from 'react-redux'
 import { loggedIn } from "../store/loginSlice";
 import { useNavigate } from "react-router-dom";
 import { userToken, userInfos } from "../store/userSlice";
-import store from "../store/store";
 import { checkCredentials, getUserData } from "../api/api";
 
 const SignIn = () => {
@@ -46,14 +44,12 @@ const SignIn = () => {
 							<input type="checkbox" id="remember-me" />
 							<label htmlFor="remember-me">Remember me</label>
 						</div>
-						{/*<a href="./user">*/}
 						<button
 							type="button"
 							onClick={attemptToLog}
 							className="sign-in-button">
 							Sign In
 						</button>
-						{/*</a>*/}
 					</form>
 				</section>
 			</main>
