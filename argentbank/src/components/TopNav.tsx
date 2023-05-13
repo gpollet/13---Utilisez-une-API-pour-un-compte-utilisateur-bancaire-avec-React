@@ -5,8 +5,9 @@ import { loggedOut } from "../store/loginSlice";
 const TopNav = () => {
 	const loginSelector = useSelector((state: { login: boolean }) => state.login);
 	const userFirstName = useSelector((state) => state.user).data.firstName
+	const dispatch = useDispatch()
 	const logout = () => {
-		useDispatch(loggedOut());
+		dispatch(loggedOut());
 	};
 	if (loginSelector.value === true) {
 		return (
