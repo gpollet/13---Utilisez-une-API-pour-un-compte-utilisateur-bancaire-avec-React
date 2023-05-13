@@ -33,3 +33,25 @@ export const getUserData = async (userToken: number) => {
 	}
   return response
 };
+
+export const updateUserProfile = async (userToken: number, firstName: string, lastName: string) => {
+  let response
+	try {
+		await axios
+			.put(
+				"http://localhost:3001/api/v1/user/profile",
+				{
+          firstName: firstName, lastName: lastName
+        },
+				{ headers: { Authorization: `Bearer ${userToken}` } }
+			)
+			.then((res) => {
+				console.log(res)
+        response = res
+			});
+	} catch (error) {
+		console.log(error);
+    return;
+	}
+  return response
+};

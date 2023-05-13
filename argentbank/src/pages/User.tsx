@@ -1,7 +1,24 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { updateUserProfile } from "../api/api";
+import { userInfos } from "../store/userSlice";
 
 const User = () => {
-	const userData = useSelector((state) => state.user).data
+	const dispatch = useDispatch()
+	const userData = useSelector((state) => state.user).data;
+	const userToken = useSelector((state) => state.user).token
+	const [nameEditIsVisible, setState] = useState(false);
+	const changeEditNameDisplay = () => {
+		setState(!nameEditIsVisible);
+	};
+	const updateUserName = async (event) => {
+		event.preventDefault()
+		const newFirstName = document.getElementById("firstname").value
+		const newLastName = document.getElementById("lastname").value
+		changeEditNameDisplay()
+		const userData = await updateUserProfile(userToken,newFirstName, newLastName)
+		dispatch(userInfos(userData.data.body))
+	}
 	return (
 		<>
 			<main className="main bg-dark">
@@ -9,9 +26,44 @@ const User = () => {
 					<h1>
 						Welcome back
 						<br />
-						{userData.firstName} {userData.lastName}
+						{nameEditIsVisible === false
+							? `${userData.firstName} ${userData.lastName}`
+							: ""}
 					</h1>
-					<button className="edit-button">Edit Name</button>
+					{nameEditIsVisible === false ? (
+						<button className="edit-button" onClick={changeEditNameDisplay}>
+							Edit Name
+						</button>
+					) : (
+						<form className="edit-name_form">
+							<div className="edit-name_form-inputs">
+								<div className="input-wrapper">
+									<input
+										type="text"
+										placeholder={`${userData.firstName}`}
+										id="firstname"></input>
+								</div>
+								<div className="input-wrapper">
+									<input
+										type="text"
+										placeholder={`${userData.lastName}`}
+										id="lastname"></input>
+								</div>
+							</div>
+							<div className="edit-name_form-buttons">
+									<button
+										className="edit-form-button"
+										onClick={updateUserName}>
+										Save
+									</button>
+									<button
+										className="edit-form-button"
+										onClick={changeEditNameDisplay}>
+										Cancel
+									</button>
+							</div>
+						</form>
+					)}
 				</div>
 				<h2 className="sr-only">Accounts</h2>
 				<section className="account">
