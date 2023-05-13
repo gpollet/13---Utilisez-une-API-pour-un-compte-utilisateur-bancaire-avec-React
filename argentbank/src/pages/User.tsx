@@ -4,21 +4,35 @@ import { updateUserProfile } from "../api/api";
 import { userInfos } from "../store/userSlice";
 
 const User = () => {
-	const dispatch = useDispatch()
+	const dispatch = useDispatch();
 	const userData = useSelector((state) => state.user).data;
-	const userToken = useSelector((state) => state.user).token
+	const userToken = useSelector((state) => state.user).token;
 	const [nameEditIsVisible, setState] = useState(false);
 	const changeEditNameDisplay = () => {
 		setState(!nameEditIsVisible);
 	};
 	const updateUserName = async (event) => {
-		event.preventDefault()
-		const newFirstName = document.getElementById("firstname").value
-		const newLastName = document.getElementById("lastname").value
-		changeEditNameDisplay()
-		const userData = await updateUserProfile(userToken,newFirstName, newLastName)
-		dispatch(userInfos(userData.data.body))
-	}
+		event.preventDefault();
+		const newUserInfos = {
+			firstname: document.getElementById("firstname"),
+			lastname: document.getElementById("lastname"),
+		};
+		// If user does not change a field, uses the original value, otherwise it would be changed to "undefined" in the database
+		Object.values(newUserInfos).map((entry) => {
+			if (entry.value.length) {
+				newUserInfos[entry.id] = entry.value;
+			} else {
+				newUserInfos[entry.id] = entry.placeholder;
+			}
+		});
+		changeEditNameDisplay();
+		const userData = await updateUserProfile(
+			userToken,
+			newUserInfos.firstname,
+			newUserInfos.lastname
+		);
+		dispatch(userInfos(userData.data.body));
+	};
 	return (
 		<>
 			<main className="main bg-dark">
@@ -51,16 +65,14 @@ const User = () => {
 								</div>
 							</div>
 							<div className="edit-name_form-buttons">
-									<button
-										className="edit-form-button"
-										onClick={updateUserName}>
-										Save
-									</button>
-									<button
-										className="edit-form-button"
-										onClick={changeEditNameDisplay}>
-										Cancel
-									</button>
+								<button className="edit-form-button" onClick={updateUserName}>
+									Save
+								</button>
+								<button
+									className="edit-form-button"
+									onClick={changeEditNameDisplay}>
+									Cancel
+								</button>
 							</div>
 						</form>
 					)}
