@@ -1,16 +1,12 @@
 import axios from "axios";
 
 const requestModel = async (method:string, endpoint:string, data = {}, headers= {}) => {
-  let response
-  await axios({
+  return await axios({
     method: `${method}`,
     url: `http://localhost:3001/api/v1/user/${endpoint}`,
     data: data,
     headers: headers
-  }).then((res) => {
-    response = res
   })
-  return response
 }
 
 export const checkCredentials = async (email:string, password:string) => {

@@ -1,41 +1,43 @@
-import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { updateUserProfile } from "../api/api";
 import { userInfos } from "../store/userSlice";
+import { NewUserInfos, useAppDispatch, useAppSelector } from "../types";
 
 const User = () => {
-	const dispatch = useDispatch();
-	const userData = useSelector((state) => state.user).data;
-	const userToken = useSelector((state) => state.user).token;
+	const dispatch = useAppDispatch()
+	const userData = useAppSelector((state) => state.user).data;
+	const userToken = useAppSelector((state) => state.user).token;
 	const [nameEditIsVisible, setState] = useState(false);
 	const changeEditNameDisplay = () => {
 		setState(!nameEditIsVisible);
 	};
-	const updateUserName = async (event) => {
+
+	const updateUserName = async (event: { preventDefault: () => void; }) => {
 		event.preventDefault();
-		const newUserInfos = {
-			firstname: document.getElementById("firstname"),
-			lastname: document.getElementById("lastname"),
+		const newUserInfos:NewUserInfos = {
+			firstname: document.getElementById("firstname") as HTMLInputElement,
+			lastname: document.getElementById("lastname") as HTMLInputElement,
 		};
 		// If user does not change a field, uses the original value, otherwise it would be changed to "undefined" in the database
 		Object.values(newUserInfos).map((entry) => {
 			if (entry.value.length) {
-				newUserInfos[entry.id] = entry.value;
+				newUserInfos[entry.id as keyof typeof newUserInfos] = entry.value;
 			} else {
-				newUserInfos[entry.id] = entry.placeholder;
+				newUserInfos[entry.id as keyof typeof newUserInfos] = entry.placeholder;
 			}
 		});
+
+	// Updates user data in the store, and displays the new name chosen by user
 		changeEditNameDisplay();
 		const userData = await updateUserProfile(
 			userToken,
-			newUserInfos.firstname,
-			newUserInfos.lastname
+			newUserInfos.firstname as string,
+			newUserInfos.lastname as string
 		);
 		dispatch(userInfos(userData.data.body));
 	};
 	return (
 		<>
-			<main className="main bg-dark">
 				<div className="header">
 					<h1>
 						Welcome back
@@ -108,7 +110,6 @@ const User = () => {
 						<button className="transaction-button">View transactions</button>
 					</div>
 				</section>
-			</main>
 		</>
 	);
 };

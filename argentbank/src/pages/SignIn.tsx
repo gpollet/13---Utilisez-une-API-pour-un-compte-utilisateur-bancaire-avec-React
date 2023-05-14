@@ -1,17 +1,17 @@
-import { useDispatch } from 'react-redux'
 import { loggedIn } from "../store/loginSlice";
 import { useNavigate } from "react-router-dom";
 import { userToken, userInfos } from "../store/userSlice";
 import { checkCredentials, getUserData } from "../api/api";
+import { useAppDispatch } from '../types';
 
 const SignIn = () => {
-	const dispatch = useDispatch()
+	const dispatch = useAppDispatch()
 	const navigate = useNavigate()
 	
 	const attemptToLog = async () => {
 		const credentials = {
-			email: document.getElementById("username")?.value,
-			password: document.getElementById("password")?.value
+			email: (document.getElementById("username") as HTMLInputElement)?.value,
+			password: (document.getElementById("password")  as HTMLInputElement)?.value
 		}
 		const loginResponse = await checkCredentials(credentials.email, credentials.password)
 			if (loginResponse.status === 200) {
@@ -27,7 +27,6 @@ const SignIn = () => {
 
 	return (
 		<>
-			<main className="main bg-dark">
 				<section className="sign-in-content">
 					<i className="fa fa-user-circle sign-in-icon"></i>
 					<h1>Sign In</h1>
@@ -52,7 +51,6 @@ const SignIn = () => {
 						</button>
 					</form>
 				</section>
-			</main>
 		</>
 	);
 };
