@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { loggedOut } from "../store/loginSlice";
 import { useAppDispatch, useAppSelector } from "../types";
+import { clearData } from "../store/userSlice";
 
 const TopNav = () => {
 	const loginSelector = useAppSelector((state) => state.login);
@@ -8,6 +9,7 @@ const TopNav = () => {
 	const dispatch = useAppDispatch()
 	const logout = () => {
 		dispatch(loggedOut());
+		dispatch(clearData())
 	};
 	// Displays a different top nav depending on whether the user is logged in or not
 	if (loginSelector.value === true) {

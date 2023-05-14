@@ -13,10 +13,14 @@ export const userSlice = createSlice({
     },
     userInfos: (state, action:PayloadAction<UserInfos>) => {
       state.data = action.payload
+    },
+    clearData: (state) => {
+      state.token = 0,
+      state.data = {email:"",firstName:"",lastName:"",createdAt:"",updatedAt:"",id:""}
     }
   }
 })
 
-export const { userToken, userInfos} = userSlice.actions
+export const { userToken, userInfos, clearData} = userSlice.actions
 
 export default userSlice.reducer
