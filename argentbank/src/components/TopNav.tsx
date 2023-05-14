@@ -1,14 +1,17 @@
-import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { loggedOut } from "../store/loginSlice";
+import { useAppDispatch, useAppSelector } from "../types";
+import { clearData } from "../store/userSlice";
 
 const TopNav = () => {
-	const loginSelector = useSelector((state: { login: boolean }) => state.login);
-	const userFirstName = useSelector((state) => state.user).data.firstName
-	const dispatch = useDispatch()
+	const loginSelector = useAppSelector((state) => state.login);
+	const userFirstName = useAppSelector((state) => state.user).data.firstName
+	const dispatch = useAppDispatch()
 	const logout = () => {
 		dispatch(loggedOut());
+		dispatch(clearData())
 	};
+	// Displays a different top nav depending on whether the user is logged in or not
 	if (loginSelector.value === true) {
 		return (
 			<>
