@@ -1,0 +1,218 @@
+openapi: 3.0.1
+info:
+  title: Bank Argent API documentation
+  description: Contains API endpoints for the future transactions page
+  termsOfService: http://swagger.io/terms/
+  version: 1.0.0
+servers:
+  - url: http://localhost:3001/api/v1
+paths:
+  /transactions?year={year}&month={month}:
+    get:
+      tags:
+        - Transactions Module
+      summary: Transactions list
+      description: API for TransactionsList
+      parameters:
+        - name: year
+          in: query
+          description: Year for which to retrieve the transactions list.
+          schema: { default: currentYear, type: number, example: 2023 }
+        - name: month
+          in: query
+          description: Month for which to retrieve the transactions list.
+          schema: { default: currentMonth, type: number, example: 05, minimum: 1, maximum: 12 }
+      responses:
+        200:
+          description: Successfully fetched transactions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionsListResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+        500:
+          $ref: "#/components/responses/500"
+  /transactions/{transactionId}:
+    get:
+      tags:
+        - Transactions Module
+      summary: Transaction details
+      description: API for TransactionDetails
+      requestBody:
+        description: TransactionDetails Payload
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Transaction"
+        required: true
+      responses:
+        200:
+          description: Transaction found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+        500:
+          $ref: "#/components/responses/500"
+      x-codegen-request-body-name: body
+  /transactions/{transactionId}?field={fieldName}:
+    patch:
+      tags:
+        - Transactions Module
+      summary: TransactionEdit API
+      description: API adding, changing or removing category or notes from a transaction
+      parameters:
+        - name: fieldName
+          in: query
+          required: true
+          description: Name of the field to update in the database with user's input.
+          schema: {}
+      requestBody:
+        description: TransactionEdit Payload
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                transactionId:
+                  type: string 
+                value:
+                  type: string
+              example:
+                transactionId: abc123def456
+                value: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eaque ad suscipit, reiciendis optio sequi quos pariatur, consequuntur fuga ab magnam deserunt inventore similique aliquam quasi quibusdam at nihil beatae nostrum!
+      responses:
+        200:
+          description: Successfully updated transaction
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionResponse"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+        500:
+          $ref: "#/components/responses/500"
+components:
+  schemas:
+    Transaction:
+      type: object
+      properties:
+        transactionId:
+          type: string
+          description: transaction id
+    TransactionsList:
+      type: object
+      properties:
+        year:
+          type: number
+          description: year for which transactions are requested
+        month:
+          type: number
+          description: month for which transactions are requested
+    TransactionResponse:
+      type: object
+      properties:
+        transactionId:
+          type: string
+          description: transaction id
+        date:
+          type: string
+          description: transaction date
+        description:
+          type: string
+          description: transaction description
+        amount:
+          type: number
+          description: transaction amount
+        balance:
+          type: number
+          description: available balance
+        transactionType:
+          type: string
+          description: transaction type
+        category:
+          type: string
+          description: transaction category
+        notes:
+          type: string
+          description: transaction notes
+    TransactionsListResponse:
+      type: object
+      properties:
+        entryIndex:
+          type: object
+          description: transactions list
+          properties:  
+            transactionId:
+              type: string
+              description: transaction id
+            date:
+              type: string
+              description: transaction date
+            description:
+              type: string
+              description: transaction description
+            amount:
+              type: number
+              description: transaction amount
+            balance:
+              type: number
+              description: available balance
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
+  responses:
+    "400":
+      description: Could not process invalid request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    "401":
+      description: Unauthorized request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    "404":
+      description: Data not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    "500":
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+  securitySchemes:
+    Bearer:
+      type: apiKey
+      name: Authorization
+      in: header
+security:
+  - Bearer: []
