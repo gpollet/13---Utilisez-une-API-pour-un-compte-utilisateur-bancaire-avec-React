@@ -28,7 +28,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TransactionsListResponse"
+                type: array
+                items:
+                  $ref: "#/components/schemas/TransactionsListResponse"
         400:
           $ref: "#/components/responses/400"
         401:
@@ -43,13 +45,15 @@ paths:
         - Transactions Module
       summary: Transaction details
       description: API for TransactionDetails
-      requestBody:
-        description: TransactionDetails Payload
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Transaction"
-        required: true
+      parameters:
+        - name: transactionId
+          in: path
+          description: TransactionDetails Payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+          required: true
       responses:
         200:
           description: Transaction found
@@ -73,6 +77,11 @@ paths:
       summary: TransactionEdit API
       description: API adding, changing or removing category or notes from a transaction
       parameters:
+        - name: transactionId
+          in: path
+          required: true
+          description: Id of the transaction to update
+          schema: {}
         - name: fieldName
           in: query
           required: true
@@ -86,12 +95,9 @@ paths:
             schema:
               type: object
               properties:
-                transactionId:
-                  type: string 
                 value:
                   type: string
               example:
-                transactionId: abc123def456
                 value: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eaque ad suscipit, reiciendis optio sequi quos pariatur, consequuntur fuga ab magnam deserunt inventore similique aliquam quasi quibusdam at nihil beatae nostrum!
       responses:
         200:
@@ -111,11 +117,8 @@ paths:
 components:
   schemas:
     Transaction:
-      type: object
-      properties:
-        transactionId:
-          type: string
-          description: transaction id
+      type: string
+      description: transaction id
     TransactionsList:
       type: object
       properties:
@@ -155,25 +158,21 @@ components:
     TransactionsListResponse:
       type: object
       properties:
-        entryIndex:
-          type: object
-          description: transactions list
-          properties:  
-            transactionId:
-              type: string
-              description: transaction id
-            date:
-              type: string
-              description: transaction date
-            description:
-              type: string
-              description: transaction description
-            amount:
-              type: number
-              description: transaction amount
-            balance:
-              type: number
-              description: available balance
+          transactionId:
+            type: string
+            description: transaction id
+          date:
+            type: string
+            description: transaction date
+          description:
+            type: string
+            description: transaction description
+          amount:
+            type: number
+            description: transaction amount
+          balance:
+            type: number
+            description: available balance
     Error:
       type: object
       properties:
